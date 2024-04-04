@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Nft {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tokenId String @db.VarChar(255) @unique
+  mintAddress String? @db.VarChar(255) @ignore
+  burnTx String? @db.VarChar(255)
+  claimTx String? @db.VarChar(255)
+  burned Boolean @default(false)
+  claimed Boolean @default(false)
+  data Json
+  owner Holder @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  solNft SolNft?
+}
+
+model Holder {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  seiAddress String @db.VarChar(255) @unique
+  solAddress String? @db.VarChar(255) @unique
+
+  nfts Nft[]
+}
+
+model SolNft {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tokenId String @db.VarChar(255) @unique
+  tokenAddress String @db.VarChar(255) @unique
+  seiNft Nft? @relation(fields: [seiId], references: [id])
+  seiId Int? @unique
+}
