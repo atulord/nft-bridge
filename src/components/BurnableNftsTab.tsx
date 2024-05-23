@@ -9,7 +9,6 @@ import { getSession } from 'next-auth/react';
 
 export const getServerSideProps: GetServerSideProps = (async(ctx) => {
    let session = getSession(ctx);
-   console.log('HELLO');
   // const params = new URLSearchParams({
   //   holder: accounts[0]?.address,
   // })
